@@ -15,9 +15,10 @@ def main(args):
     - selecting the necessary models and views for the current task
     - passing data between models and views
     """
-    in_files = args.infiles
-    if not isinstance(in_files, list):
-        in_files = [args.infiles]
+    infiles = args.infiles
+    if not isinstance(infiles, list):
+        infiles = [args.infiles]
+
 
     if args.full_data_analysis:
         _, extension = os.path.splitext(infiles[0])
@@ -26,35 +27,20 @@ def main(args):
         elif extension == '.csv':
             data_source = CSVDataSource(os.path.dirname(infiles[0]))
         else:
-            raise ValueError(f'Unsupported file format: {extension}')
-        data_result = analyse_data(data_source)
-        graph_data = {
-            'standard deviation by day': data_result,
-        }
-        views.visualize(graph_data)
+            raise ValueError(f'Unsupported data file format: {extension}')
+        analyse_data(data_source)
         return
 
-    for filename in in_files:
+    for filename in infiles:
         inflammation_data = models.load_csv(filename)
 
-        view_data = {'average': models.daily_mean(inflammation_data),
-                     'max': models.daily_max(inflammation_data),
-                     'min': models.daily_min(inflammation_data)}
-
-    in_files = args.input_files
-    if not isinstance(in_files, list):
-        in_files = [args.input_files]
-
-    for filename in in_files:
-        inflammation_data = models.load_csv(filename)
-        view_data = {'average': models.daily_mean(inflammation_data),
-                     'max': models.daily_max(inflammation_data),
-                     'min': models.daily_min(inflammation_data)}
+        view_data = {
+            'average': models.daily_mean(inflammation_data),
+            'max': models.daily_max(inflammation_data),
+            'min': models.daily_min(inflammation_data)
+        }
 
         views.visualize(view_data)
-
-
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
