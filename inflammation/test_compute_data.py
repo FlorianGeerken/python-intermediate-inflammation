@@ -40,5 +40,3 @@ def test_compute_standard_deviation_by_day(data, expected_output):
 
     result = compute_standard_deviation_by_day(data)
     npt.assert_array_almost_equal(result, expected_output)
-
-test_compute_standard_deviation_by_day(data, expected_output)
