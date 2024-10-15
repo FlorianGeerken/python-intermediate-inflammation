@@ -1,5 +1,6 @@
 """Tests for statistics functions within the Model layer."""
 
+
 import numpy as np
 import numpy.testing as npt
 import pytest
@@ -105,3 +106,15 @@ def test_patient_normalise(test, expected, expect_raises):
     else:
         result = patient_normalise(test)
         npt.assert_allclose(result, np.array(expected), rtol=1e-2, atol=1e-2)
+
+
+@pytest.mark.parametrize('data, expected_standard_deviation', [
+    ([0, 0, 0], 0.0),
+    ([1.0, 1.0, 1.0], 0),
+    ([0.0, 2.0], 1.0),
+    ([0.0, -2.0], -1.0)
+])
+def test_daily_standard_deviation(data, expected_standard_deviation):
+    from inflammation.models import s_dev
+    result_data = s_dev(data)['standard deviation']
+    npt.assert_approx_equal(result_data, expected_standard_deviation)
