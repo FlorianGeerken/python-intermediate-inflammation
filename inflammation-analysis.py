@@ -8,7 +8,7 @@ from inflammation import models, views
 from inflammation.compute_data import analyse_data
 
 
-def main(args):
+def main(in_args):
     """The MVC Controller of the patient inflammation data system.
 
     The Controller is responsible for:
@@ -34,11 +34,15 @@ def main(args):
     for filename in infiles:
         inflammation_data = models.load_csv(filename)
 
-        view_data = {'average': models.daily_mean(inflammation_data), 'max': models.daily_max(inflammation_data),
-                     'min': models.daily_min(inflammation_data), **(models.s_dev(inflammation_data))}
-
+        view_data = {
+          'average': models.daily_mean(inflammation_data),
+          'max': models.daily_max(inflammation_data),
+          'min': models.daily_min(inflammation_data),
+          'daily_std_dev': (models.daily_std_dev(inflammation_data))
+        }
 
         views.visualize(view_data)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -57,6 +61,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     main(args)
-
-
-
